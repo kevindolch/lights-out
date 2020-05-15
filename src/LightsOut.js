@@ -1,6 +1,16 @@
 import React from 'react';
 import './App.css';
 
+const ROW_MAP = {
+  "00111": [3],
+  "01010": [1,4],
+  "01101": [0],
+  "10001": [3,4],
+  "10110": [4],
+  "11011": [2],
+  "11100": [1]
+}
+
 export default class LightsOut extends React.Component {
   static populateGrid() {
     return Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => Math.round(Math.random())));
@@ -11,18 +21,21 @@ export default class LightsOut extends React.Component {
     this.state = {
       lights: this.constructor.populateGrid(),
       moveCount: 0,
-      activeCells: 0
+      activeCells: 0,
+      unsolvable: false,
+      botActive: false
     }
     this.state.activeCells = this.state.lights.reduce((total, row) => (row.reduce((subtotal, cell) => (cell + subtotal), 0) + total), 0);
     this.handleReset = this.handleReset.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.handleBotPlay = this.handleBotPlay.bind(this);
   }
 
   handleReset(e) {
     e.preventDefault();
     const lights = this.constructor.populateGrid();
     const activeCells = lights.reduce((total, row) => (row.reduce((subtotal, cell) => (cell + subtotal), 0) + total), 0);
-    this.setState({ lights, activeCells, moveCount: 0 });
+    this.setState({ lights, activeCells, moveCount: 0, unsolvable: false });
   }
 
   handleToggle(e) {
@@ -57,6 +70,37 @@ export default class LightsOut extends React.Component {
     });
   }
 
+  async chaseLightsPass() {
+    for (let i = 0; i < this.state.lights.length -1; i++) {
+      for (let j = 0; j < this.state.lights[i].length; j++) {
+        if (this.state.lights[i][j] === 1) {
+          const elements = document.querySelectorAll(`[data-row='${i + 1}'][data-col='${j}']`)
+          elements[0].click()
+          await new Promise(r => setTimeout(r, 500));
+        }
+      }
+    }
+  }
+
+  async handleBotPlay(e) {
+    e.preventDefault();
+    this.setState({ botActive: true });
+    await this.chaseLightsPass();
+    const finalRow = this.state.lights[this.state.lights.length -1].join("")
+    const clickLocations = ROW_MAP[finalRow]
+    if (typeof clickLocations === "undefined") {
+      this.setState({ unsolvable: !(finalRow === "00000"), botActive: false })
+      return;
+    }
+    for (var i = 0; i < clickLocations.length; i++) {
+      const elements = document.querySelectorAll(`[data-row='0'][data-col='${clickLocations[i]}']`)
+      elements[0].click();
+      await new Promise(r => setTimeout(r, 500));
+    }
+    await this.chaseLightsPass();
+    this.setState({ botActive: false })
+  }
+
   render() {
     const grid = this.state.lights.map((row, i) => (
       <div className="row" key={i}>{row.map((cell, j) => (
@@ -71,7 +115,11 @@ export default class LightsOut extends React.Component {
         {this.state.activeCells === 0 &&
           <div>Congratulations, you won in {this.state.moveCount} turns.  Click reset to play again!</div>
         }
-        <button onClick={this.handleReset}>Reset</button>
+        {this.state.unsolvable &&
+          <div>This configuration is unsolvable try another one with reset</div>
+        }
+        <button disabled={this.state.botActive} onClick={this.handleReset}>Reset</button>
+        <button disabled={this.state.botActive} onClick={this.handleBotPlay}>Play Automatically</button>
       </div>
     );
   }
