@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import LightsOut from './LightsOut';
+import LightsOut from './components/LightsOut';
 
 ReactDOM.render(
   <React.StrictMode>

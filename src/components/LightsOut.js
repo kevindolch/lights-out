@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.scss';
+import '../styles/LightsOut.scss';
 
 const ROW_MAP = {
   "00111": [3],
