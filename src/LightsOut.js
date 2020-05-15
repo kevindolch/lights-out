@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 const ROW_MAP = {
   "00111": [3],
@@ -38,7 +38,8 @@ export default class LightsOut extends React.Component {
     this.setState({ lights, activeCells, moveCount: 0, unsolvable: false });
   }
 
-  handleToggle(e) {
+  handleToggle(e, fromBot = false) {
+
     e.preventDefault();
     if(this.state.activeCells === 0) {
       return;
@@ -75,7 +76,7 @@ export default class LightsOut extends React.Component {
       for (let j = 0; j < this.state.lights[i].length; j++) {
         if (this.state.lights[i][j] === 1) {
           const elements = document.querySelectorAll(`[data-row='${i + 1}'][data-col='${j}']`)
-          elements[0].click()
+          elements[0].click();
           await new Promise(r => setTimeout(r, 500));
         }
       }
@@ -104,22 +105,26 @@ export default class LightsOut extends React.Component {
   render() {
     const grid = this.state.lights.map((row, i) => (
       <div className="row" key={i}>{row.map((cell, j) => (
-        <div className={`cell ${cell ? "on" : "off"}`} data-row={i} data-col={j} key={`${i}-${j}`} onClick={this.handleToggle} />
+        <div className={`cell ${cell ? "on" : "off"} ${this.state.activeCells === 0 ? "disabled" : ""}`} data-row={i} data-col={j} key={`${i}-${j}`} onClick={this.handleToggle} />
       ))}
       </div>))
 
     return (
-      <div>
-        <div className="counter">{this.state.moveCount}</div>
-        {grid}
+      <div className="container">
+        <h2>Lights Out</h2>
+        <div className="counter">Total Moves: {this.state.moveCount}</div>
+        <div className="grid-container">{grid}</div>
+        <div className="instructions">Instructions: Click cells to try to turn off all lights</div>
+        <div className="button-container">
+          <button disabled={this.state.botActive} onClick={this.handleReset}>Reset</button>
+          <button disabled={this.state.botActive} onClick={this.handleBotPlay}>Auto-Play</button>
+        </div>
         {this.state.activeCells === 0 &&
-          <div>Congratulations, you won in {this.state.moveCount} turns.  Click reset to play again!</div>
+          <div className="message">Congratulations, you won in {this.state.moveCount} turns.  Click reset to play again!</div>
         }
         {this.state.unsolvable &&
-          <div>This configuration is unsolvable try another one with reset</div>
+          <div className="message">This configuration is unsolvable. Try another one with reset</div>
         }
-        <button disabled={this.state.botActive} onClick={this.handleReset}>Reset</button>
-        <button disabled={this.state.botActive} onClick={this.handleBotPlay}>Play Automatically</button>
       </div>
     );
   }

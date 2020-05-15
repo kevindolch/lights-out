@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+body {
+  font-family: 'Audiowide', cursive;
+}
+
+button {
+  font-family: inherit;
+  width: 120px;
+  height: 35px;
+  background-color: #00CFD0;
+  font-size: inherit;
+  border-radius: 25px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: lighten(#00CFD0, 10%);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background-color: darken(#00CFD0, 20%);
+}
+
+.cell {
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 25%;
+  padding: 0;
+}
+
+.row {
+  height: 50px;
+}
+
+.on {
+  background-color: #FFDF00;
+  box-shadow: 0 0 20px #FFDF00;
+  transition: background-color .3s;
+  transition: box-shadow .3s;
+}
+
+.on:hover {
+  background-color: lighten(#FFDF00, 10%);
+  box-shadow: 0 0 20px lighten(#FFDF00, 10%);
+  transition: background-color .3s;
+}
+
+.off {
+  background-color: grey;
+  transition: background-color .3s;
+}
+
+.off:hover {
+  background-color: lighten(grey, 10%);
+  transition: background-color .3s;
+}
+
+.disabled {
+  background-color: darken(grey, 10%);
+  cursor: default;
+}
+
+.disabled:hover {
+  background-color: darken(grey, 10%);
+}
+
+.counter {
+  margin-bottom: 20px;
+}
+
+.grid-container {
+  margin-bottom: 20px;
+}
+
+.button-container {
+  margin-bottom: 20px;
+}
+
+.container {
+  text-align: center;
+}
+
+.instructions {
+  margin-bottom: 20px;
+}
