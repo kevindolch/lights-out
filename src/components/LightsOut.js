@@ -105,7 +105,7 @@ export default class LightsOut extends React.Component {
   render() {
     const grid = this.state.lights.map((row, i) => (
       <div className="row" key={i}>{row.map((cell, j) => (
-        <div className={`cell ${cell ? "on" : "off"} ${this.state.activeCells === 0 ? "disabled" : ""}`} data-row={i} data-col={j} key={`${i}-${j}`} onClick={this.handleToggle} />
+        <div data-testid={`${i}-${j}`} className={`cell ${cell ? "on" : "off"} ${this.state.activeCells === 0 ? "disabled" : ""}`} data-row={i} data-col={j} key={`${i}-${j}`} onClick={this.handleToggle} />
       ))}
       </div>))
 
@@ -116,8 +116,8 @@ export default class LightsOut extends React.Component {
         <div className="grid-container">{grid}</div>
         <div className="instructions">Instructions: Click cells to try to turn off all lights</div>
         <div className="button-container">
-          <button disabled={this.state.botActive} onClick={this.handleReset}>Reset</button>
-          <button disabled={this.state.botActive} onClick={this.handleBotPlay}>Auto-Play</button>
+          <button data-testid="reset" disabled={this.state.botActive} onClick={this.handleReset}>Reset</button>
+          <button data-testid="bot" disabled={this.state.botActive} onClick={this.handleBotPlay}>Auto-Play</button>
         </div>
         {this.state.activeCells === 0 &&
           <div className="message">Congratulations, you won in {this.state.moveCount} turns.  Click reset to play again!</div>
